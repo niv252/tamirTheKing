@@ -1,9 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
 import { Product } from 'src/app/models/product.model';
-import { StoreService } from 'src/app/services/store/store.service';
+import { ProductsService } from 'src/app/services/products/products.service';
 
 @Component({
   selector: 'app-product-details',
@@ -14,8 +14,10 @@ export class ProductDetailsComponent {
 
   product$: Observable<Product>;
 
-  constructor(private route: ActivatedRoute, private storeService: StoreService) { 
-    this.product$ = this.storeService.getProductByName(this.route.snapshot.paramMap.get('name'));
+  constructor(private route: ActivatedRoute, private productsService: ProductsService) { 
+    this.route.queryParams.subscribe(params => {
+      this.product$ = this.productsService.getProductByName(params['name']);
+    });
   }
 
 }

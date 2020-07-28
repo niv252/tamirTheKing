@@ -32,8 +32,8 @@
         </div>
         <div class="cartContainer" [routerLink]="['/cart']">
             <span class="ui text bold orange">
-                <span *ngIf="length$ | async as length else zeroLength">
-                    ({{length}})
+                <span *ngIf="(length$ | async) !== null">
+                    ({{length$ | async}})
                 </span>
             </span>
             <div class="cartIconContainer">
@@ -43,7 +43,3 @@
         </div>
     </div>
 </div>
-
-<ng-template #zeroLength>
-    <span>({{0}})</span>
-</ng-template>

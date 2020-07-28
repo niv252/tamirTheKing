@@ -1,11 +1,11 @@
-import { map } from 'rxjs/operators';
-import { Component, OnInit } from '@angular/core';
-import { Observable, combineLatest } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, combineLatest, Subscription } from 'rxjs';
 
 import { Product } from 'src/app/models/product.model';
 import { CartProduct } from 'src/app/models/cart-product.model';
 import { CartService } from 'src/app/services/cart/cart.service';
-import { StoreService } from 'src/app/services/store/store.service';
+import { ProductsService } from 'src/app/services/products/products.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,50 +14,50 @@ import { Router } from '@angular/router';
   styleUrls: ['./cart.component.less']
 })
 
-export class CartComponent implements OnInit {
+export class CartComponent implements OnInit, OnDestroy {
 
   cart$: Observable<{product: Product, quantity: number}[]>;
-  totalPrice$: Observable<number>;
-  isInCheckout: boolean;
+  totalPrice: number;
+  cartSubscription$: Subscription;
 
-  constructor(private cartService: CartService, private storeService: StoreService, private router: Router) {
-    this.isInCheckout = false;
-  }
+  constructor(private cartService: CartService, private productsService: ProductsService, private router: Router) { }
 
   ngOnInit() {
-    this.cart$ = combineLatest(this.cartService.getCartProducts(), this.storeService.getProducts())
-      .pipe(map(([cartProducts, products]: [CartProduct[], Product[]]) => 
-        cartProducts.map((cartProduct: CartProduct) =>
+    this.cart$ = combineLatest(this.cartService.getCartProducts(), this.productsService.getProducts())
+      .pipe(map(([cartProducts, products]: [Record<string, number>, Product[]]) => 
+        products.filter((product: Product) => cartProducts[product.name]).map((product: Product) => 
           ({
-            product: this.findProductByName(products, cartProduct.productName),
-            quantity: cartProduct.quantity
-          }))
-    ));
-
-    this.totalPrice$ = this.cartService.getTotalPrice();
-  }
-
-  private findProductByName(products: Product[], name: string): Product {
-    return products.find((product: Product) => product.name === name);
+            product: product,
+            quantity: cartProducts[product.name]
+          })
+    )), tap((cart: {product: Product, quantity: number}[]) => this.totalPrice = this.getTotalPrice(cart)));
   }
 
   removeProduct(name: string) {
     this.cartService.removeProduct(name);
   }
 
-  changeQuantity(cartProduct: CartProduct) {
-    this.cartService.updateProductQuantity(cartProduct.productName, cartProduct.quantity);
-  }
-
-  continueShopping() {
-    this.router.navigate(['/home']);
+  changeQuantity(productName: string, quantity: number) {
+    this.cartService.updateProductQuantity(productName, quantity);
   }
 
   checkout() {
-    if(!this.isInCheckout) {
-      this.isInCheckout = true;
-    } else {
-      this.cartService.purchaseCart();
+    this.cartSubscription$ = this.cartService.getCartProducts().subscribe((cart: Record<string, number>) => {
+      this.productsService.purchaseProducts(cart);
+    });
+
+    this.cartService.purchaseCart();
+  }
+
+  private getTotalPrice(cart: {product: Product, quantity: number}[]): number {
+    return cart.reduce((sum: number, current: {product: Product, quantity: number}) =>
+       sum + current.product.price * current.quantity, 0);
+  }
+
+  ngOnDestroy() {
+    if(this.cartSubscription$) {
+      this.cartSubscription$.unsubscribe()
     }
   }
+
 }

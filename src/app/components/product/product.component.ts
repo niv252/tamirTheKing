@@ -1,36 +1,31 @@
-import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 import { Product } from 'src/app/models/product.model';
-import { CartService } from '../../services/cart/cart.service';
 
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.less']
 })
-export class ProductComponent implements OnInit {
+export class ProductComponent {
 
   @Input() product: Product;
-  isCartProductExist: Observable<boolean>;
+  @Input() isInCart: boolean;
 
-  constructor(private router: Router, private cartService: CartService) { }
-
-  ngOnInit() {
-    this.isCartProductExist = this.cartService.isCartProductExist(this.product.name);
-  }
-
-  showProductDetails(): void {
-    this.router.navigate(['/product-details', { name: this.product.name }]);
+  @Output() productRemoved: EventEmitter<void>;
+  @Output() productAdded: EventEmitter<void>;
+  
+  constructor() {
+    this.productRemoved = new EventEmitter<void>();
+    this.productAdded = new EventEmitter<void>();
   }
 
   addProductToCart() {
-    this.cartService.addProduct(this.product.name);
+    this.productAdded.emit();
   }
   
   removeProductFromCart() {
-    this.cartService.removeProduct(this.product.name);
+    this.productRemoved.emit();
   }
 
 }

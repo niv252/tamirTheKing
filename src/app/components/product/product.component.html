@@ -1,4 +1,4 @@
-<div class="ui card" style="height: 100%;">
+<div class="ui card full-height">
     <div class="image">
         <div class="ui red message out-of-stock" *ngIf="product.limit === 0">
             out of stock
@@ -6,17 +6,16 @@
         <img [src]="product.image" class="imageContainer">
     </div>
     <div class="content">
-        <a class="header" (click)="showProductDetails()">{{product.name}}</a>
+        <a class="header" [routerLink]="['/product-details']" [queryParams]="{ name: product.name }">{{product.name}}</a>
         <div class="description">
             {{product.description}}
         </div>
     </div>
     <div class="extra content">
         <div class="row">
-            <div>₪{{product.price}}</div>
+            <div>{{product.price | currency:"ILS":"symbol"}}</div>
             <div>Rating: 3/5</div>
-            <!-- <div class="ui yellow disabled rating" data-rating="3" data-max-rating="5"></div> -->
-            <div *ngIf="!(isCartProductExist | async) else removeProduct">
+            <div *ngIf="!isInCart else removeProduct">
                 <button class="ui button right floated" [ngClass]="{'disabled': product.limit === 0, 'primary': product.limit !== 0}" (click)="addProductToCart()">Add to cart</button>
             </div>    
         </div>
