@@ -1,0 +1,49 @@
+<div class="navbarContainer">
+    <div [routerLink]="['/']" class="logoContainer">
+        <img src="../../../assets/images/white_logo.png" class="logo" />
+    </div>
+    <div class="ui action input searchInput">
+        <input type="text" placeholder="Search...">
+        <button class="ui primary icon button">
+            <i class="search icon"></i>
+        </button>
+    </div>
+    <div class="userAreaContainer">
+        <div class="ui simple dropdown accountsContainer">
+            <span class="ui bold text white">Account&Lists</span>
+            <i class="dropdown icon inverted"></i>
+            <div class="ui menu item two column relaxed divided grid transition left">
+                <div class="row">
+                    <div class="column">
+                        <span class="ui bold text">Your Account</span>
+                        <div class="ui link list">
+                            <a class="item">SIGN IN</a>
+                            <a class="item">SIGN UP</a>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <span class="ui bold text">Your Lists</span>
+                        <div class="ui link list">
+                            <a class="item">Ceate New List</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cartContainer" [routerLink]="['/cart']">
+            <span class="ui text bold orange">
+                <span *ngIf="length$ | async as length else zeroLength">
+                    ({{length}})
+                </span>
+            </span>
+            <div class="cartIconContainer">
+                <i class="ui cart icon inverted large"></i>
+                <span class="ui bold text white">cart</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #zeroLength>
+    <span>({{0}})</span>
+</ng-template>
