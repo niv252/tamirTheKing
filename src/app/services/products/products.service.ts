@@ -31,8 +31,8 @@ export class ProductsService {
   purchaseProducts(cart: Cart) {
     let products = this.products$.getValue();
     this.products$.next(products.map((product: Product) => {
-      if (cart.cartProducts[product.name] && product.limit) {
-        product = { ...product, limit: product.limit - cart.cartProducts[product.name] };
+      if (cart[product.name] && product.limit) {
+        product = { ...product, limit: product.limit - cart[product.name] };
       }
 
       return product;

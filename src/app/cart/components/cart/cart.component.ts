@@ -5,7 +5,6 @@ import { Observable, combineLatest, Subscription } from 'rxjs';
 import { Product } from 'src/app/models/product.model';
 import { CartService } from 'src/app/services/cart/cart.service';
 import { ProductsService } from 'src/app/services/products/products.service';
-import { Cart } from 'src/app/models/cart.model';
 
 @Component({
   selector: 'app-cart',
@@ -24,10 +23,10 @@ export class CartComponent implements OnInit {
   ngOnInit() {
     this.cart$ = combineLatest(this.cartService.getCart(), this.productsService.getProducts())
       .pipe(map(([cart, products]: [Cart, Product[]]) => 
-        products.filter((product: Product) => cart.cartProducts[product.name]).map((product: Product) => 
+        products.filter((product: Product) => cart[product.name]).map((product: Product) => 
           ({
             product: product,
-            quantity: cart.cartProducts[product.name]
+            quantity: cart[product.name]
           })
     )), tap((cart: {product: Product, quantity: number}[]) => this.totalPrice = this.getTotalPrice(cart)));
   }

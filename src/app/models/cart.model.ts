@@ -1,3 +1,1 @@
-export interface Cart {
-    cartProducts: Record<string, number>;
-}
+type Cart =  Record<string, number>;
