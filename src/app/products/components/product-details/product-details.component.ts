@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 
 import { Product } from 'src/app/models/product.model';
 import { ProductsService } from 'src/app/services/products/products.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-product-details',
@@ -15,9 +16,9 @@ export class ProductDetailsComponent {
   product$: Observable<Product>;
 
   constructor(private route: ActivatedRoute, private productsService: ProductsService) { 
-    this.route.queryParams.subscribe(params => {
-      this.product$ = this.productsService.getProductByName(params['name']);
-    });
+    this.product$ = this.route.queryParams.pipe(switchMap((params: Params) => 
+      this.productsService.getProductByName(params['name'])
+    ));
   }
 
 }

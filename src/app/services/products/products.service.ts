@@ -5,10 +5,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Product } from '../../models/product.model';
+import { Cart } from 'src/app/models/cart.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ProductsService {
 
   private readonly jsonPath = '/assets/json/products.json';
@@ -20,7 +19,7 @@ export class ProductsService {
   }
 
   getProducts(): Observable<Product[]> {
-    return this.products$;
+    return this.products$.asObservable();
   }
 
   getProductByName(name: string): Observable<Product> {
@@ -29,11 +28,11 @@ export class ProductsService {
     );
   }
 
-  purchaseProducts(cart: Record<string, number>) {
+  purchaseProducts(cart: Cart) {
     let products = this.products$.getValue();
     this.products$.next(products.map((product: Product) => {
-      if (cart[product.name] && product.limit) {
-        product = { ...product, limit: product.limit - cart[product.name] };
+      if (cart.cartProducts[product.name] && product.limit) {
+        product = { ...product, limit: product.limit - cart.cartProducts[product.name] };
       }
 
       return product;
@@ -41,7 +40,7 @@ export class ProductsService {
   }
 
   private getJSON(): Observable<Product[]> {
-    return this.http.get(this.jsonPath) as Observable<Product[]>;
+    return this.http.get<Product[]>(this.jsonPath);
   }
 
 }

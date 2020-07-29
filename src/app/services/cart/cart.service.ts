@@ -1,57 +1,54 @@
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-
-@Injectable({
-  providedIn: 'root'
-})
+import { Cart } from '../../models/cart.model';
+@Injectable()
 export class CartService {
 
-  private cart$: BehaviorSubject<Record<string, number>>;
-
+  private cart$: BehaviorSubject<Cart>;
 
   constructor() {
-    this.cart$ = new BehaviorSubject<Record<string, number>>({});
+    this.cart$ = new BehaviorSubject<Cart>({cartProducts: {}} as Cart);
   }
 
   addProduct(name: string) {
-    let cart = this.cart$.getValue();
-    cart[name] = 1;
+    const cart = this.cart$.getValue();
+    cart.cartProducts[name] = 1;
     this.cart$.next(cart);
   }
 
   removeProduct(name: string) {
-    let cart = this.cart$.getValue();
-    delete cart[name];
+    const cart = this.cart$.getValue();
+    delete cart.cartProducts[name];
     this.cart$.next(cart);
   }
 
   updateProductQuantity(name: string, quantity: number) {
-    let cart = this.cart$.getValue();
+    const cart = this.cart$.getValue();
 
-    if(cart[name]) {
-      cart[name] = quantity;
+    if(cart.cartProducts[name]) {
+      cart.cartProducts[name] = quantity;
     }
 
     this.cart$.next(cart);
   }
 
   getCartSize(): Observable<number> {
-    return this.cart$.pipe(map((cart: Record<string, number>) => Object.keys(cart).length));
+    return this.cart$.pipe(map((cart: Cart) => Object.keys(cart.cartProducts).length));
   }
 
   isCartProductExist(name: string): Observable<boolean> {
-    return this.cart$.pipe(map((cart: Record<string, number>) => 
-      cart[name] !== undefined
+    return this.cart$.pipe(map((cart: Cart) => 
+      !!cart.cartProducts[name]
     ));
   }
 
-  getCartProducts(): Observable<Record<string, number>> {
+  getCart(): Observable<Cart> {
     return this.cart$.asObservable();
   }
 
   purchaseCart() {
-    this.cart$.next({});
+    this.cart$.next({cartProducts:{}} as Cart);
   }
 
 }

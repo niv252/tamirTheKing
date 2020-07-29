@@ -1,10 +1,11 @@
-import { map, tap } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { map, tap, take } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
 import { Observable, combineLatest, Subscription } from 'rxjs';
 
 import { Product } from 'src/app/models/product.model';
 import { CartService } from 'src/app/services/cart/cart.service';
 import { ProductsService } from 'src/app/services/products/products.service';
+import { Cart } from 'src/app/models/cart.model';
 
 @Component({
   selector: 'app-cart',
@@ -12,7 +13,7 @@ import { ProductsService } from 'src/app/services/products/products.service';
   styleUrls: ['./cart.component.less']
 })
 
-export class CartComponent implements OnInit, OnDestroy {
+export class CartComponent implements OnInit {
 
   cart$: Observable<{product: Product, quantity: number}[]>;
   totalPrice: number;
@@ -21,12 +22,12 @@ export class CartComponent implements OnInit, OnDestroy {
   constructor(private cartService: CartService, private productsService: ProductsService) { }
 
   ngOnInit() {
-    this.cart$ = combineLatest(this.cartService.getCartProducts(), this.productsService.getProducts())
-      .pipe(map(([cartProducts, products]: [Record<string, number>, Product[]]) => 
-        products.filter((product: Product) => cartProducts[product.name]).map((product: Product) => 
+    this.cart$ = combineLatest(this.cartService.getCart(), this.productsService.getProducts())
+      .pipe(map(([cart, products]: [Cart, Product[]]) => 
+        products.filter((product: Product) => cart.cartProducts[product.name]).map((product: Product) => 
           ({
             product: product,
-            quantity: cartProducts[product.name]
+            quantity: cart.cartProducts[product.name]
           })
     )), tap((cart: {product: Product, quantity: number}[]) => this.totalPrice = this.getTotalPrice(cart)));
   }
@@ -40,7 +41,7 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   checkout() {
-    this.cartSubscription$ = this.cartService.getCartProducts().subscribe((cart: Record<string, number>) => {
+    this.cartSubscription$ = this.cartService.getCart().pipe(take(1)).subscribe((cart: Cart) => {
       this.productsService.purchaseProducts(cart);
     });
 
@@ -50,12 +51,6 @@ export class CartComponent implements OnInit, OnDestroy {
   private getTotalPrice(cart: {product: Product, quantity: number}[]): number {
     return cart.reduce((sum: number, current: {product: Product, quantity: number}) =>
        sum + current.product.price * current.quantity, 0);
-  }
-
-  ngOnDestroy() {
-    if(this.cartSubscription$) {
-      this.cartSubscription$.unsubscribe()
-    }
   }
 
 }

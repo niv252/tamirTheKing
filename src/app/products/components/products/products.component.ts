@@ -26,7 +26,7 @@ export class ProductsComponent {
     this.cartService.removeProduct(name);
   }
 
-  isProductInCart(name): Observable<boolean> {
+  isProductInCart$(name): Observable<boolean> {
     return this.cartService.isCartProductExist(name);
   }
 }
