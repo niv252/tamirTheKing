@@ -1,0 +1,11 @@
+<div class="products-container">
+    <div class="ui link cards four column grid container header">
+        <ng-container *ngFor="let product of productsInStore$ | async">
+            <app-product class="column" [product]="product"
+                                        [isInCart]="isProductInCart(product.name) | async"
+                                        (productRemoved)="removeProductFromCart(product.name)"
+                                        (productAdded)="addProductToCart(product.name)">
+            </app-product>
+        </ng-container>
+    </div>
+</div>

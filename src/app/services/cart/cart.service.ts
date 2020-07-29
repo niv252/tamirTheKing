@@ -2,7 +2,9 @@ import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class CartService {
 
   private cart$: BehaviorSubject<Record<string, number>>;
