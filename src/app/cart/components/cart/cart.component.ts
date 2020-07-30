@@ -5,6 +5,7 @@ import { Observable, combineLatest, Subscription } from 'rxjs';
 import { Product } from 'src/app/models/product.model';
 import { CartService } from 'src/app/services/cart/cart.service';
 import { ProductsService } from 'src/app/services/products/products.service';
+import { Cart } from 'src/app/models/cart.model';
 
 @Component({
   selector: 'app-cart',

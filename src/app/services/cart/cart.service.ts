@@ -2,6 +2,8 @@ import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 
+import { Cart } from 'src/app/models/cart.model';
+
 @Injectable()
 export class CartService {
 
