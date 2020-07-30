@@ -17,7 +17,6 @@ export class CartComponent implements OnInit {
 
   cart$: Observable<{product: Product, quantity: number}[]>;
   totalPrice: number;
-  cartSubscription$: Subscription;
 
   constructor(private cartService: CartService, private productsService: ProductsService) { }
 
@@ -41,7 +40,7 @@ export class CartComponent implements OnInit {
   }
 
   checkout() {
-    this.cartSubscription$ = this.cartService.getCart().pipe(take(1)).subscribe((cart: Cart) => {
+    this.cartService.getCart().pipe(take(1)).subscribe((cart: Cart) => {
       this.productsService.purchaseProducts(cart);
     });
 
