@@ -34,15 +34,14 @@ describe('ProductsService', () => {
     httpMock = TestBed.get(HttpTestingController);
     service = TestBed.get(ProductsService);
     productsRequest = httpMock.expectOne(jsonPath);
+    productsRequest.flush(products); 
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return products', (done) => {
-    productsRequest.flush(products); 
-    
+  it('should return products', (done) => {    
     service.getProducts()
     .subscribe((res: Product[]) => {
        expect(res).toBe(products);
@@ -50,9 +49,7 @@ describe('ProductsService', () => {
     });
   });
 
-  it('should return product', (done) => {
-    productsRequest.flush(products); 
-    
+  it('should return product', (done) => {    
     service.getProductByName(products[0].name).subscribe((product: Product) => {
       expect(product).toBe(products[0]);
       done();
@@ -61,15 +58,13 @@ describe('ProductsService', () => {
 
   
   it('should update products after purchase', (done) => {
-    productsRequest.flush(products); 
-    
-    const originalLimit = products.find((product: Product) => product.name === "Oatmeal").limit;
+    const originalOatmealProduct = products.find((product: Product) => product.name === "Oatmeal");
     const quantityBought = 5;
     let cart = {Oatmeal: quantityBought} as Cart;
     service.purchaseProducts(cart);
     service.getProducts().subscribe((products: Product[]) => {
       let boughtProduct = products.find((product: Product) => product.name === "Oatmeal");
-      expect(boughtProduct.limit).toBe(originalLimit - quantityBought);
+      expect(boughtProduct.limit).toBe(originalOatmealProduct.limit - quantityBought);
       done();
     })
   });

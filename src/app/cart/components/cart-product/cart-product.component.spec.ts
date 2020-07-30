@@ -1,9 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CartProductComponent } from './cart-product.component';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('CartProductComponent', () => {
   let component: CartProductComponent;
@@ -12,10 +10,8 @@ describe('CartProductComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CartProductComponent ],
-      imports: [
-        MatSelectModule,
-        MatFormFieldModule,
-        BrowserAnimationsModule
+      schemas: [
+        NO_ERRORS_SCHEMA
       ]
     })
     .compileComponents();
