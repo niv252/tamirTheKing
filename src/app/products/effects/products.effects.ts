@@ -17,7 +17,7 @@ export class ProductsEffects {
     ofType(loadProducts),
     mergeMap(() => this.http.get<Product[]>(this.jsonPath)
       .pipe(
-        map(products => {console.log("products",products);return productsLoaded({products: products})}),
+        map(products => productsLoaded({products: products})),
         catchError(() => EMPTY)
       ))
     )
