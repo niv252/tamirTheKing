@@ -1,10 +1,10 @@
 import { createReducer, on, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { productsLoaded, purchaseProducts } from '../actions/products.actions';
+import { purchaseProducts, productsLoadedSuccess, productsLoadedFail } from '../actions/products.actions';
 import { Product } from '../../models/product.model';
 import { Cart } from 'src/app/models/cart.model';
 
-export const PRODUCTS_STORE_TOKEN='products';
+export const PRODUCTS_STORE_TOKEN='PRODUCTS_STATE';
 
 export interface ProductsState {
   products: Product[]
@@ -27,12 +27,18 @@ const _productsReducer = createReducer(initialState,
           : product))
     })
   ),
-  on(productsLoaded, (state: ProductsState, props: {products: Product[]}) =>
+  on(productsLoadedSuccess, (state: ProductsState, {products}) =>
     ({
       ...state,
-      products: props.products
+      products: products
     })
-  )
+  ),
+  on(productsLoadedFail, (state: ProductsState) =>
+  ({
+    ...state,
+    products: []
+  })
+)
 );
  
 export function productsReducer(state, action) {
@@ -48,5 +54,5 @@ export const selectProducts = createSelector(
 
 export const selectProductByName = createSelector(
   selectFeature,
-  (state: ProductsState, props) => state.products.find((product: Product) => product.name === props.name)
+  (state: ProductsState, {name}) => state.products.find((product: Product) => product.name === name)
 );

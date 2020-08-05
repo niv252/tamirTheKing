@@ -1,10 +1,10 @@
 import { Observable } from 'rxjs';
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 
 import { Product } from 'src/app/models/product.model';
 import { ProductsState , selectProducts} from '../../reducers/products.reducer';
-import { CartState, selectIsCartProductExist } from 'src/app/cart/reducers/cart.reducer';
+import { CartState, selectIsProductInCart } from 'src/app/cart/reducers/cart.reducer';
 import { addCartProduct, removeCartProduct } from 'src/app/cart/actions/cart.actions';
 
 @Component({
@@ -15,23 +15,23 @@ import { addCartProduct, removeCartProduct } from 'src/app/cart/actions/cart.act
 })
 export class ProductsComponent implements OnInit {
 
-  productsInStore$: Observable<Product[]>;
+  products$: Observable<Product[]>;
 
-  constructor(private productsStore: Store<ProductsState>, private cartStore: Store<CartState>) { }
+  constructor(private store: Store<ProductsState | CartState>) { }
 
   ngOnInit() {
-    this.productsInStore$ = this.productsStore.select(selectProducts);
+    this.products$ = this.store.select(selectProducts);
   }
 
   addProductToCart(name) {
-    this.cartStore.dispatch(addCartProduct({name: name}))
+    this.store.dispatch(addCartProduct({name}))
   }
   
   removeProductFromCart(name) {
-    this.cartStore.dispatch(removeCartProduct({name: name}))
+    this.store.dispatch(removeCartProduct({name}))
   }
 
   isProductInCart$(name): Observable<boolean> {
-    return this.cartStore.select(selectIsCartProductExist, {name: name});
+    return this.store.select(selectIsProductInCart, {name});
   }
 }

@@ -21,10 +21,10 @@ export class CartComponent implements OnInit {
   cart$: Observable<{product: Product, quantity: number}[]>;
   totalPrice: number;
 
-  constructor(private productsStore: Store<ProductsState>, private cartStore: Store<CartState>) { }
+  constructor(private store: Store<ProductsState | CartState>) { }
 
   ngOnInit() {
-    this.cart$ = combineLatest(this.cartStore.select(selectCart), this.productsStore.select(selectProducts))
+    this.cart$ = combineLatest(this.store.select(selectCart), this.store.select(selectProducts))
       .pipe(map(([cart, products]: [Cart, Product[]]) => 
         products.filter((product: Product) => cart[product.name]).map((product: Product) => 
           ({
@@ -35,19 +35,19 @@ export class CartComponent implements OnInit {
   }
 
   removeProduct(name: string) {
-    this.cartStore.dispatch(removeCartProduct({name: name}));
+    this.store.dispatch(removeCartProduct({name}));
   }
 
-  changeQuantity(productName: string, quantity: number) {
-    this.cartStore.dispatch(updateProductQuantity({name: productName, quantity: quantity}));
+  changeQuantity(name: string, quantity: number) {
+    this.store.dispatch(updateProductQuantity({name, quantity}));
   }
 
   checkout() {
-    this.cartStore.select(selectCart).pipe(take(1)).subscribe((cart: Cart) => {
-      this.productsStore.dispatch(purchaseProducts(cart));
+    this.store.select(selectCart).pipe(take(1)).subscribe((cart: Cart) => {
+      this.store.dispatch(purchaseProducts(cart));
     });
 
-    this.cartStore.dispatch(purchaseCart());
+    this.store.dispatch(purchaseCart());
   }
 
   private getTotalPrice(cart: {product: Product, quantity: number}[]): number {

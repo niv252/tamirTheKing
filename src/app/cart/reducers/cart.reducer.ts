@@ -4,40 +4,40 @@ import { createReducer, on, createSelector, createFeatureSelector } from '@ngrx/
 import { Cart } from '../../models/cart.model';
 import { addCartProduct, removeCartProduct, purchaseCart, updateProductQuantity } from '../actions/cart.actions';
 
-export const CART_STORE_TOKEN='cart';
+export const CART_STORE_TOKEN='CART_STATE';
 
 export interface CartState {
   cart: Cart
 }
 
 export const initialState: CartState = {
-  cart: {} as Cart
+  cart: {}
 };
  
 const _cartReducer = createReducer(initialState,
-  on(addCartProduct, (state: CartState, props: {name: string}) => (
+  on(addCartProduct, (state: CartState, {name}) => (
     {
       ...state,
       cart: 
       {
         ...state.cart,
-        [props.name]: 1
+        [name]: 1
       }
     })
   ),
-  on(removeCartProduct, (state: CartState, props: {name: string}) => (
+  on(removeCartProduct, (state: CartState, {name}) => (
     {
       ...state,
-      cart: omit(state.cart, props.name)
+      cart: omit(state.cart, name)
     })
   ),
-  on(updateProductQuantity, (state: CartState, props: {name: string, quantity: number}) => (
+  on(updateProductQuantity, (state: CartState, {name, quantity}) => (
     {
       ...state,
       cart:
       {
         ...state.cart,
-        [props.name]: props.quantity
+        [name]: quantity
       }
     })
   ),
@@ -65,7 +65,7 @@ export const selectCartSize = createSelector(
   (state: CartState) => Object.keys(state.cart).length
 );
 
-export const selectIsCartProductExist = createSelector(
+export const selectIsProductInCart = createSelector(
   selectFeature,
-  (state: CartState, props) => !!state.cart[props.name]
+  (state: CartState, {name}) => !!state.cart[name]
 );

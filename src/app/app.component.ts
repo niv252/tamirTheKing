@@ -1,20 +1,9 @@
-import { Store } from '@ngrx/store';
-import { Component, OnInit } from '@angular/core';
-
-import { ProductsState } from './products/reducers/products.reducer';
-import { loadProducts } from './products/actions/products.actions';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'amaromach';
-  
-  constructor(private productsStore: Store<ProductsState>) { }
-
-  ngOnInit() {
-    this.productsStore.dispatch(loadProducts());
-  }
-
 }

@@ -14,8 +14,7 @@ import { purchaseProducts } from 'src/app/products/actions/products.actions';
 describe('CartComponent', () => {
   let component: CartComponent;
   let fixture: ComponentFixture<CartComponent>;
-  let cartStore: MockStore<CartState>;
-  let productsStore: MockStore<ProductsState>;
+  let store: MockStore<CartState | ProductsState>;
   const name = 'tamir';
   
   beforeEach(async(() => {
@@ -48,8 +47,7 @@ describe('CartComponent', () => {
   }));
 
   beforeEach(() => {
-    cartStore = TestBed.inject(MockStore);
-    productsStore = TestBed.inject(MockStore);
+    store = TestBed.inject(MockStore);
     fixture = TestBed.createComponent(CartComponent);
     component = fixture.componentInstance;
 
@@ -60,17 +58,17 @@ describe('CartComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it(`should dispatch remove product from cartStore on removeCart`, () => {
-    spyOn(cartStore, 'dispatch');
+  it(`should dispatch remove product from store on removeCart`, () => {
+    spyOn(store, 'dispatch');
     component.removeProduct(name);
-    expect(cartStore.dispatch).toHaveBeenCalledWith(removeCartProduct({name: name}));
+    expect(store.dispatch).toHaveBeenCalledWith(removeCartProduct({name: name}));
   });
 
-  it(`should dispatch updateProductQuantity from cartStore on changeQuantity`, () => {
+  it(`should dispatch updateProductQuantity from store on changeQuantity`, () => {
     const quantity = 1;
-    spyOn(cartStore, 'dispatch');
+    spyOn(store, 'dispatch');
     component.changeQuantity(name, quantity);
-    expect(cartStore.dispatch).toHaveBeenCalledWith(updateProductQuantity({name: name, quantity: quantity}));
+    expect(store.dispatch).toHaveBeenCalledWith(updateProductQuantity({name: name, quantity: quantity}));
   });
 
   it('should initialize cart on ngOnInit', () => {
@@ -78,16 +76,16 @@ describe('CartComponent', () => {
   });
 
   describe('checkout', () => {
-    it('should dispatch cartStore purchaseCart', () => {
-      spyOn(cartStore, 'dispatch');
+    it('should dispatch store purchaseCart', () => {
+      spyOn(store, 'dispatch');
       component.checkout();
-      expect(cartStore.dispatch).toHaveBeenCalledWith(purchaseCart());
+      expect(store.dispatch).toHaveBeenCalledWith(purchaseCart());
     });
 
-    it('should dispatch productsStore purchaseProducts', () => {
-      spyOn(productsStore, 'dispatch');
+    it('should dispatch store purchaseProducts', () => {
+      spyOn(store, 'dispatch');
       component.checkout();
-      expect(productsStore.dispatch).toHaveBeenCalledWith(purchaseProducts({}));
+      expect(store.dispatch).toHaveBeenCalledWith(purchaseProducts({}));
     });
   });
 });

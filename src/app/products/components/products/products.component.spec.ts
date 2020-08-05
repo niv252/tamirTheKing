@@ -13,8 +13,7 @@ import { addCartProduct, removeCartProduct } from 'src/app/cart/actions/cart.act
 describe('ProductsComponent', () => {
   let component: ProductsComponent;
   let fixture: ComponentFixture<ProductsComponent>;
-  let cartStore: MockStore<CartState>;
-  let productsStore: MockStore<ProductsState>;
+  let store: MockStore<CartState | ProductsState>;
   const name = 'tamir';
 
   beforeEach(async(() => {
@@ -40,8 +39,7 @@ describe('ProductsComponent', () => {
   }));
 
   beforeEach(() => {
-    cartStore = TestBed.inject(MockStore);
-    productsStore = TestBed.inject(MockStore);
+    store = TestBed.inject(MockStore);
     fixture = TestBed.createComponent(ProductsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -51,15 +49,15 @@ describe('ProductsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it(`should add product to cart store`, () => {
-    spyOn(cartStore, 'dispatch');
+  it(`should add product to store`, () => {
+    spyOn(store, 'dispatch');
     component.addProductToCart(name);
-    expect(cartStore.dispatch).toHaveBeenCalledWith(addCartProduct({name: name}));
+    expect(store.dispatch).toHaveBeenCalledWith(addCartProduct({name}));
   });
 
-  it(`should remove product from cart store`, () => {
-    spyOn(cartStore, 'dispatch');
+  it(`should remove product from store`, () => {
+    spyOn(store, 'dispatch');
     component.removeProductFromCart(name);
-    expect(cartStore.dispatch).toHaveBeenCalledWith(removeCartProduct({name: name}));
+    expect(store.dispatch).toHaveBeenCalledWith(removeCartProduct({name}));
   });
 });

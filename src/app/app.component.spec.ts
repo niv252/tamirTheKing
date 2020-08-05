@@ -1,16 +1,12 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { CartState, selectCartSize } from './cart/reducers/cart.reducer';
-import { loadProducts } from './products/actions/products.actions';
-import { Cart } from './models/cart.model';
+import { provideMockStore } from '@ngrx/store/testing';
+import { selectCartSize } from './cart/reducers/cart.reducer';
 
 describe('AppComponent', () => {
-  const initialCartState: CartState = {cart:{} as Cart};
-  let store: MockStore<CartState>;
   let fixture: ComponentFixture<AppComponent>;;
   let app: AppComponent;
 
@@ -24,8 +20,7 @@ describe('AppComponent', () => {
         NavbarComponent
       ],
       providers: [
-        provideMockStore({ 
-          initialState: initialCartState,
+        provideMockStore({
           selectors: [
             {
               selector: selectCartSize,
@@ -35,7 +30,6 @@ describe('AppComponent', () => {
         })
       ]
     }).compileComponents();
-    store = TestBed.inject(MockStore);
     fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     app = fixture.componentInstance;
@@ -47,11 +41,5 @@ describe('AppComponent', () => {
 
   it(`should have as title 'amaromach'`, () => {
     expect(app.title).toEqual('amaromach');
-  });
-
-  it(`should dispatch loadProducts on init`, () => {
-    spyOn(store, 'dispatch');
-    app.ngOnInit();
-    expect(store.dispatch).toHaveBeenCalledWith(loadProducts());
   });
 });

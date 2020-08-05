@@ -2,13 +2,14 @@ import { TestBed, async } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Observable, of } from 'rxjs';
 import { Action } from '@ngrx/store';
-import { hot } from 'jasmine-marbles';
+import { hot, cold } from 'jasmine-marbles';
 
 import { Product } from 'src/app/models/product.model';
 import { ProductsEffects } from './products.effects';
-import { productsLoaded, loadProducts } from '../actions/products.actions';
+import { productsLoadedSuccess, loadProducts } from '../actions/products.actions';
 import { HttpClient } from '@angular/common/http';
 import { mock, instance, when } from 'ts-mockito';
+import { ROOT_EFFECTS_INIT } from '@ngrx/effects';
 
 describe('productsEffects', () => {
     let effects: ProductsEffects;
@@ -50,7 +51,15 @@ describe('productsEffects', () => {
     it('should load products to state', () => {
         when(mockedHttpClient.get<Product[]>(jsonPath)).thenReturn(of(products));
         actions$ = hot('a', {a: loadProducts()}); 
-        const expected = hot('b', {b: productsLoaded({products: products})});
+        const expected = hot('b', {b: productsLoadedSuccess({products: products})});
         expect(effects.loadProducts$).toBeObservable(expected);
+    })
+
+    it('should init load products on start', () => {
+        actions$ = hot('a', {a: {type: ROOT_EFFECTS_INIT}}); 
+
+        const expected = hot('b', {b: loadProducts()});
+
+        expect(effects.initLoadProducts$).toBeObservable(expected);
     })
 });

@@ -3,16 +3,6 @@ import { addCartProduct, removeCartProduct, updateProductQuantity, purchaseCart 
 import { Cart } from 'src/app/models/cart.model';
 
 describe('cartReducer', () => {
-    describe('undefined action', () => {
-        it('should return the default state', () => {
-            const expectedState =  initialState;
-            const action = {};
-            const state = cartReducer(undefined, action);
-
-            expect(state).toBe(expectedState);
-        });
-    });
-
     describe('addCartProduct', () => {
         it('should add cart product to the state', () => {
             const cartProduct: Cart = {tamir: 1};
