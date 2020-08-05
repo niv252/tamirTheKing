@@ -1,15 +1,14 @@
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { ProductsService } from './services/products/products.service';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { CartService } from './services/cart/cart.service';
 import { CartModule } from './cart/cart.module';
 import { ProductsModule } from './products/products.module';
-
+import { StoreModule } from '@ngrx/store';
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,11 +19,11 @@ import { ProductsModule } from './products/products.module';
     AppRoutingModule,
     HttpClientModule,
     CartModule,
-    ProductsModule
-  ],
-  providers: [
-    ProductsService,
-    CartService
+    ProductsModule,
+    StoreDevtoolsModule.instrument({
+      maxAge: 25
+    }),
+    StoreModule.forRoot({})
   ],
   bootstrap: [AppComponent]
 })
