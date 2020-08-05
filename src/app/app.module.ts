@@ -9,6 +9,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { CartModule } from './cart/cart.module';
 import { ProductsModule } from './products/products.module';
 import { StoreModule } from '@ngrx/store';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,10 +21,10 @@ import { StoreModule } from '@ngrx/store';
     HttpClientModule,
     CartModule,
     ProductsModule,
+    StoreModule.forRoot({}),
     StoreDevtoolsModule.instrument({
       maxAge: 25
     }),
-    StoreModule.forRoot({})
   ],
   bootstrap: [AppComponent]
 })

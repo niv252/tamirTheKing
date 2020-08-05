@@ -4,7 +4,7 @@ import { purchaseProducts, productsLoadedSuccess, productsLoadedFail } from '../
 import { Product } from '../../models/product.model';
 import { Cart } from 'src/app/models/cart.model';
 
-export const PRODUCTS_STORE_TOKEN='PRODUCTS_STATE';
+export const PRODUCTS_STORE_TOKEN='products-state';
 
 export interface ProductsState {
   products: Product[]
@@ -33,12 +33,12 @@ const _productsReducer = createReducer(initialState,
       products: products
     })
   ),
-  on(productsLoadedFail, (state: ProductsState) =>
-  ({
-    ...state,
-    products: []
-  })
-)
+  // on(productsLoadedFail, (state: ProductsState) =>
+  // ({
+  //   ...state,
+  //   products: []
+  // })
+// )
 );
  
 export function productsReducer(state, action) {

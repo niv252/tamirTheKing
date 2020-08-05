@@ -1,14 +1,14 @@
 import { TestBed, async } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Action } from '@ngrx/store';
 import { hot, cold } from 'jasmine-marbles';
 
 import { Product } from 'src/app/models/product.model';
 import { ProductsEffects } from './products.effects';
-import { productsLoadedSuccess, loadProducts } from '../actions/products.actions';
+import { productsLoadedSuccess, loadProducts, productsLoadedFail } from '../actions/products.actions';
 import { HttpClient } from '@angular/common/http';
-import { mock, instance, when } from 'ts-mockito';
+import { mock, instance, when, anyString } from 'ts-mockito';
 import { ROOT_EFFECTS_INIT } from '@ngrx/effects';
 
 describe('productsEffects', () => {
@@ -52,6 +52,13 @@ describe('productsEffects', () => {
         when(mockedHttpClient.get<Product[]>(jsonPath)).thenReturn(of(products));
         actions$ = hot('a', {a: loadProducts()}); 
         const expected = hot('b', {b: productsLoadedSuccess({products: products})});
+        expect(effects.loadProducts$).toBeObservable(expected);
+    })
+
+    it('should dispatch load products failed when recieving an error', () => {
+        when(mockedHttpClient.get<Product[]>(anyString())).thenReturn(throwError(() => new Error));
+        actions$ = hot('a', {a: loadProducts()}); 
+        const expected = hot('b', {b: productsLoadedFail()});
         expect(effects.loadProducts$).toBeObservable(expected);
     })
 

@@ -4,7 +4,7 @@ import { createReducer, on, createSelector, createFeatureSelector } from '@ngrx/
 import { Cart } from '../../models/cart.model';
 import { addCartProduct, removeCartProduct, purchaseCart, updateProductQuantity } from '../actions/cart.actions';
 
-export const CART_STORE_TOKEN='CART_STATE';
+export const CART_STORE_TOKEN='cart-state';
 
 export interface CartState {
   cart: Cart

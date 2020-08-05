@@ -24,9 +24,9 @@ export class ProductsEffects {
     switchMap(() => this.http.get<Product[]>(this.jsonPath)
       .pipe(
         map(products => productsLoadedSuccess({ products })),
-        catchError(() => of(productsLoadedFail))
+        catchError(() => of(productsLoadedFail()))
       ))
-    )
+    ),         
   );
 
   constructor(private actions$: Actions, private http: HttpClient) { }
