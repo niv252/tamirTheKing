@@ -1,10 +1,15 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { CartService } from './services/cart/cart.service';
+import { provideMockStore } from '@ngrx/store/testing';
+import { selectCartSize } from './cart/reducers/cart.reducer';
 
 describe('AppComponent', () => {
+  let fixture: ComponentFixture<AppComponent>;;
+  let app: AppComponent;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -14,19 +19,27 @@ describe('AppComponent', () => {
         AppComponent,
         NavbarComponent
       ],
-      providers: [ CartService ]
+      providers: [
+        provideMockStore({
+          selectors: [
+            {
+              selector: selectCartSize,
+              value: 0
+            }
+          ]
+        })
+      ]
     }).compileComponents();
+    fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    app = fixture.componentInstance;
   }));
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
 
   it(`should have as title 'amaromach'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
     expect(app.title).toEqual('amaromach');
   });
 });
